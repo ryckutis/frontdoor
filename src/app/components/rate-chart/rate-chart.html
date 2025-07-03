@@ -1,0 +1,14 @@
+<div class="rate-chart-container">
+  <h2 class="chart-title">Currency Exchange Rates</h2>
+
+  <div class="chart-wrapper">
+    <canvas
+      baseChart
+      [data]="rateChartData"
+      [options]="rateChartOptions"
+      [legend]="rateChartLegend"
+      type="line"
+    >
+    </canvas>
+  </div>
+</div>
