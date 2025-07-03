@@ -43,7 +43,13 @@ export class ExchangeRateService {
   }
 
   updateRates(): Observable<string> {
-    return this.http.post<string>(`${this.API_BASE_URL}/update`, {});
+    return this.http.post(
+      `${this.API_BASE_URL}/update`,
+      {},
+      {
+        responseType: 'text',
+      }
+    );
   }
 
   setSelectedCurrency(currency: string): void {
@@ -79,7 +85,6 @@ export class ExchangeRateService {
     return Array.from(baseCurrencies).sort();
   }
 
-  // Helper method to get filtered rates based on selected currencies
   getFilteredRates(
     rates: ExchangeRate[],
     baseCurrency: string,
