@@ -13,6 +13,7 @@ export class CurrentRates implements OnInit, OnDestroy {
   currentRates: ExchangeRate[] = [];
   filteredRates: ExchangeRate[] = [];
   selectedCurrency: string = 'USD';
+  selectedBaseCurrency: string = 'LT';
   loading = false;
   error: string | null = null;
   lastUpdated: Date | null = null;
@@ -28,6 +29,15 @@ export class CurrentRates implements OnInit, OnDestroy {
         this.selectedCurrency = currency;
         this.filterRatesByCurrency();
       })
+    );
+
+    this.subscription.add(
+      this.exchangeRateService.selectedBaseCurrency$.subscribe(
+        (baseCurrency) => {
+          this.selectedBaseCurrency = baseCurrency;
+          this.filterRatesByCurrency();
+        }
+      )
     );
   }
 
@@ -59,12 +69,14 @@ export class CurrentRates implements OnInit, OnDestroy {
   filterRatesByCurrency(): void {
     if (!this.currentRates.length) return;
 
-    this.filteredRates = this.currentRates.filter(
-      (rate) =>
-        (rate.baseCurrency === 'EUR' || rate.targetCurrency === 'EUR') &&
-        (rate.baseCurrency === this.selectedCurrency ||
-          rate.targetCurrency === this.selectedCurrency)
-    );
+    this.filteredRates = this.currentRates.filter((rate) => {
+      const matchesBase = rate.baseCurrency === this.selectedBaseCurrency;
+      const matchesTarget =
+        !this.selectedCurrency ||
+        this.selectedCurrency === '' ||
+        rate.targetCurrency === this.selectedCurrency;
+      return matchesBase && matchesTarget;
+    });
   }
 
   refreshRates(): void {

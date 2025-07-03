@@ -11,7 +11,11 @@ export class ExchangeRateService {
     'https://backdoor-jd9w.onrender.com/api/fxrates';
 
   private selectedCurrencySubject = new BehaviorSubject<string>('USD');
+  private selectedBaseCurrencySubject = new BehaviorSubject<string>('LT');
+
   public selectedCurrency$ = this.selectedCurrencySubject.asObservable();
+  public selectedBaseCurrency$ =
+    this.selectedBaseCurrencySubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -50,6 +54,14 @@ export class ExchangeRateService {
     return this.selectedCurrencySubject.value;
   }
 
+  setSelectedBaseCurrency(baseCurrency: string): void {
+    this.selectedBaseCurrencySubject.next(baseCurrency);
+  }
+
+  getSelectedBaseCurrency(): string {
+    return this.selectedBaseCurrencySubject.value;
+  }
+
   getAvailableCurrencies(rates: ExchangeRate[]): string[] {
     const currencies = new Set<string>();
     rates.forEach((rate) => {
@@ -57,5 +69,26 @@ export class ExchangeRateService {
       currencies.add(rate.targetCurrency);
     });
     return Array.from(currencies).sort();
+  }
+
+  getAvailableBaseCurrencies(rates: ExchangeRate[]): string[] {
+    const baseCurrencies = new Set<string>();
+    rates.forEach((rate) => {
+      baseCurrencies.add(rate.baseCurrency);
+    });
+    return Array.from(baseCurrencies).sort();
+  }
+
+  // Helper method to get filtered rates based on selected currencies
+  getFilteredRates(
+    rates: ExchangeRate[],
+    baseCurrency: string,
+    targetCurrency: string
+  ): ExchangeRate[] {
+    return rates.filter(
+      (rate) =>
+        rate.baseCurrency === baseCurrency &&
+        (targetCurrency === '' || rate.targetCurrency === targetCurrency)
+    );
   }
 }

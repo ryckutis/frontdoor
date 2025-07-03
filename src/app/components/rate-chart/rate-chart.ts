@@ -12,6 +12,7 @@ import { ExchangeRateService } from '../../services/exchange-rate';
 })
 export class RateChart implements OnInit, OnDestroy {
   selectedCurrency: string = 'USD';
+  selectedBaseCurrency: string = 'LT';
   selectedPeriod: number = 30;
   loading = false;
   error: string | null = null;
@@ -35,7 +36,7 @@ export class RateChart implements OnInit, OnDestroy {
     plugins: {
       title: {
         display: true,
-        text: 'EUR Exchange Rate History',
+        text: 'Exchange Rate History',
       },
       legend: {
         display: true,
@@ -64,12 +65,20 @@ export class RateChart implements OnInit, OnDestroy {
   constructor(private exchangeRateService: ExchangeRateService) {}
 
   ngOnInit(): void {
-    // Subscribe to currency selection changes
     this.subscription.add(
       this.exchangeRateService.selectedCurrency$.subscribe((currency) => {
         this.selectedCurrency = currency;
         this.loadChartData();
       })
+    );
+
+    this.subscription.add(
+      this.exchangeRateService.selectedBaseCurrency$.subscribe(
+        (baseCurrency) => {
+          this.selectedBaseCurrency = baseCurrency;
+          this.loadChartData();
+        }
+      )
     );
   }
 
@@ -78,12 +87,20 @@ export class RateChart implements OnInit, OnDestroy {
   }
 
   loadChartData(): void {
+    if (!this.selectedBaseCurrency || !this.selectedCurrency) {
+      return;
+    }
+
     this.loading = true;
     this.error = null;
 
     this.subscription.add(
       this.exchangeRateService
-        .getHistoricalRates('EUR', this.selectedCurrency, this.selectedPeriod)
+        .getHistoricalRates(
+          this.selectedBaseCurrency,
+          this.selectedCurrency,
+          this.selectedPeriod
+        )
         .subscribe({
           next: (rates: ExchangeRate[]) => {
             this.updateChart(rates);
@@ -99,12 +116,10 @@ export class RateChart implements OnInit, OnDestroy {
   }
 
   updateChart(rates: ExchangeRate[]): void {
-    // Sort rates by date
     const sortedRates = rates.sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
 
-    // Extract labels and data
     const labels = sortedRates.map((rate) =>
       new Date(rate.date).toLocaleDateString()
     );
@@ -115,7 +130,7 @@ export class RateChart implements OnInit, OnDestroy {
       datasets: [
         {
           data,
-          label: `EUR/${this.selectedCurrency}`,
+          label: `${this.selectedBaseCurrency}/${this.selectedCurrency}`,
           fill: false,
           tension: 0.3,
           borderColor: 'rgb(75, 192, 192)',
@@ -128,8 +143,7 @@ export class RateChart implements OnInit, OnDestroy {
       ],
     };
 
-    // Update chart title
-    this.rateChartOptions.plugins!.title!.text = `EUR/${this.selectedCurrency} Exchange Rate History`;
+    this.rateChartOptions.plugins!.title!.text = `${this.selectedBaseCurrency}/${this.selectedCurrency} Exchange Rate History`;
   }
 
   onPeriodChange(): void {

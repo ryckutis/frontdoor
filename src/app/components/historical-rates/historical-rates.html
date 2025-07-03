@@ -16,8 +16,13 @@
     </div>
   </div>
 
-  <div *ngIf="selectedCurrency" class="currency-info">
-    <h3>EUR → {{ selectedCurrency }} ({{ selectedPeriod }} days)</h3>
+  <div *ngIf="selectedBaseCurrency && selectedCurrency" class="currency-info">
+    <h3>
+      {{ selectedBaseCurrency }} → {{ selectedCurrency }} ({{
+        selectedPeriod
+      }}
+      days)
+    </h3>
   </div>
 
   <div *ngIf="error" class="error-message">
@@ -29,12 +34,26 @@
   </div>
 
   <div
-    *ngIf="!loading && historicalRates.length === 0 && !error"
+    *ngIf="
+      !loading &&
+      historicalRates.length === 0 &&
+      !error &&
+      selectedBaseCurrency &&
+      selectedCurrency
+    "
     class="no-data"
   >
     <p>
-      No historical data available for EUR/{{ selectedCurrency }} in the
-      selected period.
+      No historical data available for {{ selectedBaseCurrency }}/{{
+        selectedCurrency
+      }}
+      in the selected period.
+    </p>
+  </div>
+
+  <div *ngIf="!selectedBaseCurrency || !selectedCurrency" class="no-data">
+    <p>
+      Please select both base and target currencies to view historical rates.
     </p>
   </div>
 

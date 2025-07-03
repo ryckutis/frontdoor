@@ -19,8 +19,15 @@
     </div>
   </div>
 
-  <div *ngIf="selectedCurrency" class="currency-info">
-    <h3>EUR ↔ {{ selectedCurrency }}</h3>
+  <div *ngIf="selectedBaseCurrency && selectedCurrency" class="currency-info">
+    <h3>{{ selectedBaseCurrency }} → {{ selectedCurrency }}</h3>
+    <p *ngIf="lastUpdated" class="last-updated">
+      Last updated: {{ lastUpdated | date : "medium" }}
+    </p>
+  </div>
+
+  <div *ngIf="selectedBaseCurrency && !selectedCurrency" class="currency-info">
+    <h3>{{ selectedBaseCurrency }} → All Currencies</h3>
     <p *ngIf="lastUpdated" class="last-updated">
       Last updated: {{ lastUpdated | date : "medium" }}
     </p>
@@ -35,7 +42,11 @@
   </div>
 
   <div *ngIf="!loading && filteredRates.length === 0 && !error" class="no-data">
-    <p>No exchange rates available for EUR and {{ selectedCurrency }}.</p>
+    <p>
+      No exchange rates available for {{ selectedBaseCurrency }}
+      <span *ngIf="selectedCurrency"> and {{ selectedCurrency }}</span
+      >.
+    </p>
     <p>Try selecting a different currency or updating the rates.</p>
   </div>
 

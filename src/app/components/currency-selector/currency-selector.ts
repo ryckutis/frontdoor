@@ -11,7 +11,9 @@ import { ExchangeRateService } from '../../services/exchange-rate';
 })
 export class CurrencySelector implements OnInit, OnDestroy {
   availableCurrencies: string[] = [];
+  availableBaseCurrencies: string[] = [];
   selectedCurrency: string = 'USD';
+  selectedBaseCurrency: string = 'LT';
   loading = false;
   private subscription = new Subscription();
 
@@ -20,11 +22,18 @@ export class CurrencySelector implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadAvailableCurrencies();
 
-    // Subscribe to selected currency changes
     this.subscription.add(
       this.exchangeRateService.selectedCurrency$.subscribe((currency) => {
         this.selectedCurrency = currency;
       })
+    );
+
+    this.subscription.add(
+      this.exchangeRateService.selectedBaseCurrency$.subscribe(
+        (baseCurrency) => {
+          this.selectedBaseCurrency = baseCurrency;
+        }
+      )
     );
   }
 
@@ -39,14 +48,27 @@ export class CurrencySelector implements OnInit, OnDestroy {
         next: (rates: ExchangeRate[]) => {
           this.availableCurrencies =
             this.exchangeRateService.getAvailableCurrencies(rates);
+          this.availableBaseCurrencies =
+            this.exchangeRateService.getAvailableBaseCurrencies(rates);
+
+          if (
+            this.availableBaseCurrencies.length > 0 &&
+            !this.selectedBaseCurrency
+          ) {
+            this.selectedBaseCurrency = this.availableBaseCurrencies[0];
+            this.exchangeRateService.setSelectedBaseCurrency(
+              this.selectedBaseCurrency
+            );
+          }
+
           this.loading = false;
         },
         error: (error) => {
           console.error('Error loading currencies:', error);
           this.loading = false;
-          // Fallback currencies
           this.availableCurrencies = [
             'USD',
+            'EUR',
             'GBP',
             'JPY',
             'CHF',
@@ -56,6 +78,7 @@ export class CurrencySelector implements OnInit, OnDestroy {
             'NOK',
             'DKK',
           ];
+          this.availableBaseCurrencies = ['LT', 'EUR'];
         },
       })
     );
@@ -63,5 +86,9 @@ export class CurrencySelector implements OnInit, OnDestroy {
 
   onCurrencyChange(): void {
     this.exchangeRateService.setSelectedCurrency(this.selectedCurrency);
+  }
+
+  onBaseCurrencyChange(): void {
+    this.exchangeRateService.setSelectedBaseCurrency(this.selectedBaseCurrency);
   }
 }

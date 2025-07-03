@@ -12,6 +12,7 @@ import { ExchangeRateService } from '../../services/exchange-rate';
 export class HistoricalRates implements OnInit, OnDestroy {
   historicalRates: ExchangeRate[] = [];
   selectedCurrency: string = 'USD';
+  selectedBaseCurrency: string = 'LT';
   selectedPeriod: number = 30;
   loading = false;
   error: string | null = null;
@@ -34,6 +35,15 @@ export class HistoricalRates implements OnInit, OnDestroy {
         this.loadHistoricalRates();
       })
     );
+
+    this.subscription.add(
+      this.exchangeRateService.selectedBaseCurrency$.subscribe(
+        (baseCurrency) => {
+          this.selectedBaseCurrency = baseCurrency;
+          this.loadHistoricalRates();
+        }
+      )
+    );
   }
 
   ngOnDestroy(): void {
@@ -41,12 +51,20 @@ export class HistoricalRates implements OnInit, OnDestroy {
   }
 
   loadHistoricalRates(): void {
+    if (!this.selectedBaseCurrency || !this.selectedCurrency) {
+      return;
+    }
+
     this.loading = true;
     this.error = null;
 
     this.subscription.add(
       this.exchangeRateService
-        .getHistoricalRates('EUR', this.selectedCurrency, this.selectedPeriod)
+        .getHistoricalRates(
+          this.selectedBaseCurrency,
+          this.selectedCurrency,
+          this.selectedPeriod
+        )
         .subscribe({
           next: (rates: ExchangeRate[]) => {
             this.historicalRates = rates.sort(

@@ -1,18 +1,40 @@
 <div class="currency-selector">
-  <h3>Select Currency</h3>
+  <h3>Currency Selection</h3>
+
   <div class="selector-container">
-    <label for="currency-select">View EUR exchange rates for:</label>
-    <select
-      id="currency-select"
-      [(ngModel)]="selectedCurrency"
-      (change)="onCurrencyChange()"
-      [disabled]="loading"
-    >
-      <option value="" disabled>Select a currency</option>
-      <option *ngFor="let currency of availableCurrencies" [value]="currency">
-        {{ currency }}
-      </option>
-    </select>
+    <div class="selector-group">
+      <label for="base-currency-select">Base Currency:</label>
+      <select
+        id="base-currency-select"
+        [(ngModel)]="selectedBaseCurrency"
+        (change)="onBaseCurrencyChange()"
+        [disabled]="loading"
+      >
+        <option value="" disabled>Select base currency</option>
+        <option
+          *ngFor="let currency of availableBaseCurrencies"
+          [value]="currency"
+        >
+          {{ currency }}
+        </option>
+      </select>
+    </div>
+
+    <div class="selector-group">
+      <label for="target-currency-select">Target Currency:</label>
+      <select
+        id="target-currency-select"
+        [(ngModel)]="selectedCurrency"
+        (change)="onCurrencyChange()"
+        [disabled]="loading"
+      >
+        <option value="" disabled>Select target currency</option>
+        <option *ngFor="let currency of availableCurrencies" [value]="currency">
+          {{ currency }}
+        </option>
+      </select>
+    </div>
+
     <div *ngIf="loading" class="loading-spinner">Loading currencies...</div>
   </div>
 </div>
