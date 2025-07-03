@@ -1,1 +1,18 @@
-<p>currency-selector works!</p>
+<div class="currency-selector">
+  <h3>Select Currency</h3>
+  <div class="selector-container">
+    <label for="currency-select">View EUR exchange rates for:</label>
+    <select
+      id="currency-select"
+      [(ngModel)]="selectedCurrency"
+      (change)="onCurrencyChange()"
+      [disabled]="loading"
+    >
+      <option value="" disabled>Select a currency</option>
+      <option *ngFor="let currency of availableCurrencies" [value]="currency">
+        {{ currency }}
+      </option>
+    </select>
+    <div *ngIf="loading" class="loading-spinner">Loading currencies...</div>
+  </div>
+</div>

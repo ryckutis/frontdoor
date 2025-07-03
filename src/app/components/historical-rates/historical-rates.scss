@@ -1,0 +1,44 @@
+.rates-table {
+  overflow-x: auto;
+}
+
+.rates-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.rates-table th,
+.rates-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.rates-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.rate-row:hover {
+  background: #f8f9fa;
+}
+
+.currency-cell {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.rate-cell {
+  font-family: "Courier New", monospace;
+  font-weight: 500;
+}
+
+.change-cell.positive {
+  color: #28a745;
+}
+
+.change-cell.negative {
+  color: #dc3545;
+}

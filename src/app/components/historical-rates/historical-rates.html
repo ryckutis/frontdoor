@@ -1,1 +1,80 @@
-<p>historical-rates works!</p>
+<div class="historical-rates">
+  <div class="header">
+    <h2>Historical Exchange Rates</h2>
+    <div class="controls">
+      <label for="period-select">Period:</label>
+      <select
+        id="period-select"
+        [(ngModel)]="selectedPeriod"
+        (change)="onPeriodChange()"
+        [disabled]="loading"
+      >
+        <option *ngFor="let period of availablePeriods" [value]="period.value">
+          {{ period.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="selectedCurrency" class="currency-info">
+    <h3>EUR → {{ selectedCurrency }} ({{ selectedPeriod }} days)</h3>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="loading-spinner">Loading historical rates...</div>
+  </div>
+
+  <div
+    *ngIf="!loading && historicalRates.length === 0 && !error"
+    class="no-data"
+  >
+    <p>
+      No historical data available for EUR/{{ selectedCurrency }} in the
+      selected period.
+    </p>
+  </div>
+
+  <div *ngIf="!loading && historicalRates.length > 0" class="rates-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Exchange Rate</th>
+          <th>Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let rate of historicalRates; let i = index"
+          class="rate-row"
+        >
+          <td class="date-cell">{{ rate.date | date : "mediumDate" }}</td>
+          <td class="rate-cell">{{ rate.rate | number : "1.2-6" }}</td>
+          <td
+            class="change-cell"
+            [class.positive]="
+              i < historicalRates.length - 1 &&
+              calculateChange(rate.rate, historicalRates[i + 1].rate) > 0
+            "
+            [class.negative]="
+              i < historicalRates.length - 1 &&
+              calculateChange(rate.rate, historicalRates[i + 1].rate) < 0
+            "
+          >
+            <span *ngIf="i < historicalRates.length - 1">
+              {{
+                calculateChange(rate.rate, historicalRates[i + 1].rate)
+                  | number : "1.2-2"
+              }}%
+            </span>
+            <span *ngIf="i === historicalRates.length - 1">-</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

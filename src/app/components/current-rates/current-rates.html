@@ -1,1 +1,62 @@
-<p>current-rates works!</p>
+<div class="current-rates">
+  <div class="header">
+    <h2>Current Exchange Rates</h2>
+    <div class="actions">
+      <button
+        (click)="refreshRates()"
+        [disabled]="loading"
+        class="btn btn-primary"
+      >
+        {{ loading ? "Loading..." : "Refresh" }}
+      </button>
+      <button
+        (click)="updateRates()"
+        [disabled]="loading"
+        class="btn btn-secondary"
+      >
+        Update Rates
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedCurrency" class="currency-info">
+    <h3>EUR ↔ {{ selectedCurrency }}</h3>
+    <p *ngIf="lastUpdated" class="last-updated">
+      Last updated: {{ lastUpdated | date : "medium" }}
+    </p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="loading-spinner">Loading exchange rates...</div>
+  </div>
+
+  <div *ngIf="!loading && filteredRates.length === 0 && !error" class="no-data">
+    <p>No exchange rates available for EUR and {{ selectedCurrency }}.</p>
+    <p>Try selecting a different currency or updating the rates.</p>
+  </div>
+
+  <div *ngIf="!loading && filteredRates.length > 0" class="rates-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Base Currency</th>
+          <th>Target Currency</th>
+          <th>Exchange Rate</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rate of filteredRates" class="rate-row">
+          <td class="currency-cell">{{ rate.baseCurrency }}</td>
+          <td class="currency-cell">{{ rate.targetCurrency }}</td>
+          <td class="rate-cell">{{ rate.rate | number : "1.2-6" }}</td>
+          <td class="date-cell">{{ rate.date | date : "shortDate" }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

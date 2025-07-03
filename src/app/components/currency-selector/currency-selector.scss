@@ -1,0 +1,29 @@
+.currency-selector h3 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.selector-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selector-container label {
+  font-weight: 500;
+  color: #555;
+}
+
+.selector-container select {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  background: white;
+}
+
+.selector-container select:focus {
+  outline: none;
+  border-color: #667eea;
+}

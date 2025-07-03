@@ -1,5 +1,7 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import {
   BaseChartDirective,
   provideCharts,
@@ -21,11 +23,8 @@ import { RateChart } from './components/rate-chart/rate-chart';
     HistoricalRates,
     RateChart,
   ],
-  imports: [BrowserModule, AppRoutingModule, BaseChartDirective],
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    [provideCharts(withDefaultRegisterables())],
-  ],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, BaseChartDirective],
+  providers: [provideCharts(withDefaultRegisterables()), provideHttpClient()],
   bootstrap: [App],
 })
 export class AppModule {}
