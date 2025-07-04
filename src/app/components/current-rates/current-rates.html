@@ -117,8 +117,7 @@
   <div *ngIf="!loading && filteredRates.length === 0 && !error" class="no-data">
     <p>
       No exchange rates available for {{ selectedBaseCurrency }}
-      <span *ngIf="selectedCurrency"> and {{ selectedCurrency }}</span
-      >.
+      <span *ngIf="selectedCurrency"> and {{ selectedCurrency }}</span> today.
     </p>
     <p>Try selecting a different currency or updating the rates.</p>
   </div>

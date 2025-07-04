@@ -44,21 +44,31 @@ export class CurrencySelector implements OnInit, OnDestroy {
   loadAvailableCurrencies(): void {
     this.loading = true;
     this.subscription.add(
-      this.exchangeRateService.getCurrentRates().subscribe({
+      this.exchangeRateService.getRecentRates().subscribe({
         next: (rates: ExchangeRate[]) => {
           this.availableCurrencies =
             this.exchangeRateService.getAvailableCurrencies(rates);
           this.availableBaseCurrencies =
             this.exchangeRateService.getAvailableBaseCurrencies(rates);
 
-          if (
-            this.availableBaseCurrencies.length > 0 &&
-            !this.selectedBaseCurrency
-          ) {
-            this.selectedBaseCurrency = this.availableBaseCurrencies[0];
-            this.exchangeRateService.setSelectedBaseCurrency(
-              this.selectedBaseCurrency
-            );
+          if (this.availableBaseCurrencies.length > 0) {
+            if (
+              !this.availableBaseCurrencies.includes(this.selectedBaseCurrency)
+            ) {
+              this.selectedBaseCurrency = this.availableBaseCurrencies[0];
+              this.exchangeRateService.setSelectedBaseCurrency(
+                this.selectedBaseCurrency
+              );
+            }
+          }
+
+          if (this.availableCurrencies.length > 0) {
+            if (!this.availableCurrencies.includes(this.selectedCurrency)) {
+              this.selectedCurrency = this.availableCurrencies[0];
+              this.exchangeRateService.setSelectedCurrency(
+                this.selectedCurrency
+              );
+            }
           }
 
           this.loading = false;
@@ -78,7 +88,7 @@ export class CurrencySelector implements OnInit, OnDestroy {
             'NOK',
             'DKK',
           ];
-          this.availableBaseCurrencies = ['LT', 'EUR'];
+          this.availableBaseCurrencies = ['LT', 'EU'];
         },
       })
     );
