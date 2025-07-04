@@ -1,7 +1,25 @@
 <div class="currency-selector">
   <h3>Currency Selection</h3>
 
-  <div class="selector-container">
+  <div *ngIf="loading" class="selector-container">
+    <div class="animate-pulse space-y-4">
+      <div class="selector-group">
+        <div class="h-4 bg-gray-300 rounded w-1/3 mb-2"></div>
+        <div class="h-12 bg-gray-300 rounded w-full"></div>
+      </div>
+
+      <div class="selector-group">
+        <div class="h-4 bg-gray-300 rounded w-1/3 mb-2"></div>
+        <div class="h-12 bg-gray-300 rounded w-full"></div>
+      </div>
+
+      <div class="flex items-center justify-center">
+        <div class="h-4 bg-gray-300 rounded w-1/2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading" class="selector-container">
     <div class="selector-group">
       <label for="base-currency-select">Base Currency:</label>
       <select
