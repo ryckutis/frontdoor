@@ -1,29 +1,108 @@
-.currency-selector h3 {
-  margin-top: 0;
-  color: #333;
-  font-size: 1.2em;
+.currency-selector {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  @media (min-width: 768px) {
+    padding: 1.5rem;
+  }
+
+  h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    font-size: 1.125rem;
+
+    @media (min-width: 768px) {
+      font-size: 1.25rem;
+    }
+  }
 }
 
 .selector-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
 }
 
-.selector-container label {
-  font-weight: 500;
-  color: #555;
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 500;
+    color: #555;
+    font-size: 0.875rem;
+  }
+
+  select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: white;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%23333' d='M6 8L2 4h8z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background-color: #f8f9fa;
+    }
+  }
 }
 
-.selector-container select {
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-  background: white;
+.loading-spinner {
+  text-align: center;
+  color: #666;
+  font-size: 0.875rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin-top: 1rem;
 }
 
-.selector-container select:focus {
-  outline: none;
-  border-color: #667eea;
+@media (max-width: 767px) {
+  .currency-selector {
+    margin-bottom: 1rem;
+
+    h3 {
+      font-size: 1rem;
+    }
+  }
+
+  .selector-group {
+    select {
+      padding: 0.875rem 0.75rem;
+      font-size: 1rem;
+      min-height: 48px;
+    }
+  }
+}
+
+@media (max-width: 414px) {
+  .currency-selector {
+    padding: 0.75rem;
+  }
+
+  .selector-group {
+    select {
+      padding: 1rem 0.75rem;
+      font-size: 1rem;
+      min-height: 50px;
+    }
+  }
 }
