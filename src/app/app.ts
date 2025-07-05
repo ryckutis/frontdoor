@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, takeUntil, forkJoin, of } from 'rxjs';
+import { Subject, takeUntil, forkJoin, of, interval } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { ExchangeRateService } from './services/exchange-rate';
 
@@ -20,11 +20,23 @@ export class App implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadInitialData();
+    this.startKeepAlive();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private startKeepAlive(): void {
+    interval(600000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.exchangeRateService.keepAlive().subscribe({
+          next: () => console.log('Keep-alive ping sent'),
+          error: (error) => console.log('Keep-alive ping failed:', error),
+        });
+      });
   }
 
   private loadInitialData(): void {
