@@ -21,6 +21,7 @@ export class App implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadInitialData();
     this.startKeepAlive();
+    console.log('App initialized, keep-alive should start');
   }
 
   ngOnDestroy(): void {
@@ -29,7 +30,8 @@ export class App implements OnInit, OnDestroy {
   }
 
   private startKeepAlive(): void {
-    interval(300000)
+    console.log('startKeepAlive() method called!');
+    interval(10000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         console.log('Sending keep-alive ping at:', new Date().toISOString());
