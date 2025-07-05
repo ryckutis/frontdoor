@@ -19,12 +19,6 @@ export class ExchangeRateService {
 
   constructor(private http: HttpClient) {}
 
-  keepAlive(): Observable<any> {
-    return this.http.get(`${this.API_BASE_URL}/health`, {
-      responseType: 'text',
-    });
-  }
-
   getCurrentRates(): Observable<ExchangeRate[]> {
     return this.http.get<ExchangeRate[]>(`${this.API_BASE_URL}/current`);
   }
