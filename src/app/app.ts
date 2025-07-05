@@ -29,12 +29,17 @@ export class App implements OnInit, OnDestroy {
   }
 
   private startKeepAlive(): void {
-    interval(600000)
+    interval(300000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.exchangeRateService.keepAlive().subscribe({
-          next: () => console.log('Keep-alive ping sent'),
-          error: (error) => console.log('Keep-alive ping failed:', error),
+        console.log('Sending keep-alive ping at:', new Date().toISOString());
+        this.exchangeRateService.getCurrentRates().subscribe({
+          next: () => {
+            console.log('Keep-alive ping successful');
+          },
+          error: (error) => {
+            console.error('Keep-alive ping failed:', error);
+          },
         });
       });
   }
