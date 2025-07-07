@@ -1,58 +1,63 @@
 <div class="currency-selector">
   <h3>Currency Selection</h3>
 
-  <div *ngIf="loading" class="selector-container">
-    <div class="animate-pulse space-y-4">
-      <div class="selector-group">
-        <div class="h-4 bg-gray-300 rounded w-1/3 mb-2"></div>
-        <div class="h-12 bg-gray-300 rounded w-full"></div>
-      </div>
-
-      <div class="selector-group">
-        <div class="h-4 bg-gray-300 rounded w-1/3 mb-2"></div>
-        <div class="h-12 bg-gray-300 rounded w-full"></div>
-      </div>
-
-      <div class="flex items-center justify-center">
-        <div class="h-4 bg-gray-300 rounded w-1/2"></div>
-      </div>
-    </div>
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading currencies...</p>
   </div>
 
-  <div *ngIf="!loading" class="selector-container">
-    <div class="selector-group">
-      <label for="base-currency-select">Base Currency:</label>
+  <div *ngIf="!loading" class="selector-content">
+    <div class="form-group">
+      <label for="baseCurrency">Base Currency:</label>
       <select
-        id="base-currency-select"
+        id="baseCurrency"
         [(ngModel)]="selectedBaseCurrency"
         (change)="onBaseCurrencyChange()"
-        [disabled]="loading"
+        class="form-control"
       >
-        <option value="" disabled>Select base currency</option>
+        <option value="">-- Select Base Currency --</option>
         <option
           *ngFor="let currency of availableBaseCurrencies"
           [value]="currency"
+          [class.unavailable]="!isDataAvailable(currency)"
         >
-          {{ currency }}
+          {{ currency }} - {{ getStatusText(currency) }}
         </option>
       </select>
     </div>
 
-    <div class="selector-group">
-      <label for="target-currency-select">Target Currency:</label>
+    <div class="form-group">
+      <label for="targetCurrency">Target Currency:</label>
       <select
-        id="target-currency-select"
+        id="targetCurrency"
         [(ngModel)]="selectedCurrency"
         (change)="onCurrencyChange()"
-        [disabled]="loading"
+        class="form-control"
       >
-        <option value="" disabled>Select target currency</option>
+        <option value="">-- Select Target Currency --</option>
         <option *ngFor="let currency of availableCurrencies" [value]="currency">
           {{ currency }}
         </option>
       </select>
     </div>
 
-    <div *ngIf="loading" class="loading-spinner">Loading currencies...</div>
+    <div class="status-info" *ngIf="selectedBaseCurrency">
+      <div
+        class="status-item"
+        [class.available]="ltDataAvailable"
+        [class.unavailable]="!ltDataAvailable"
+      >
+        <span class="status-indicator"></span>
+        LT: {{ ltDataAvailable ? "Data Available" : "No Recent Data" }}
+      </div>
+      <div
+        class="status-item"
+        [class.available]="euDataAvailable"
+        [class.unavailable]="!euDataAvailable"
+      >
+        <span class="status-indicator"></span>
+        EU: {{ euDataAvailable ? "Data Available" : "No Recent Data" }}
+      </div>
+    </div>
   </div>
 </div>
