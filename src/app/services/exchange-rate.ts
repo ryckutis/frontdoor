@@ -8,8 +8,8 @@ import { ExchangeRate } from '../models/exchange-rate';
 })
 export class ExchangeRateService {
   private readonly API_BASE_URL =
-    // 'https://backdoor-jd9w.onrender.com/api/fxrates';
-    'http://localhost:8080/api/fxrates';
+    'https://backdoor-jd9w.onrender.com/api/fxrates';
+  // 'http://localhost:8080/api/fxrates';
 
   private selectedCurrencySubject = new BehaviorSubject<string>('USD');
   private selectedBaseCurrencySubject = new BehaviorSubject<string>('LT');
