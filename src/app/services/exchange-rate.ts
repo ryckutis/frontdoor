@@ -24,13 +24,6 @@ export class ExchangeRateService {
     return this.http.get<ExchangeRate[]>(`${this.API_BASE_URL}/current`);
   }
 
-  getRecentRates(): Observable<ExchangeRate[]> {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const dateString = yesterday.toISOString().split('T')[0];
-    return this.getRatesByDate(dateString);
-  }
-
   getRatesByDate(date: string): Observable<ExchangeRate[]> {
     const params = new HttpParams().set('date', date);
     return this.http.get<ExchangeRate[]>(`${this.API_BASE_URL}/date`, {

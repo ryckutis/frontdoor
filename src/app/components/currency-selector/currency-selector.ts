@@ -73,6 +73,9 @@ export class CurrencySelector implements OnInit, OnDestroy {
     console.log('Loading available currencies...');
     this.loading = true;
 
+    this.ltDataAvailable = false;
+    this.euDataAvailable = false;
+
     const currentRates$ = this.exchangeRateService.getCurrentRates().pipe(
       catchError((error) => {
         console.log('Current rates failed:', error);
@@ -80,26 +83,11 @@ export class CurrencySelector implements OnInit, OnDestroy {
       })
     );
 
-    const recentRates$ = this.exchangeRateService.getRecentRates().pipe(
-      catchError((error) => {
-        console.log('Recent rates failed:', error);
-        return of([]);
-      })
-    );
-
     this.subscription.add(
-      forkJoin({
-        currentRates: currentRates$,
-        recentRates: recentRates$,
-      }).subscribe({
+      currentRates$.subscribe({
         next: (data) => {
-          console.log('Current rates:', data.currentRates);
-          console.log('Recent rates:', data.recentRates);
-
-          const allRates = [...data.currentRates, ...data.recentRates];
-          console.log('Combined rates:', allRates);
-
-          this.processRatesData(allRates);
+          console.log('Current rates received:', data);
+          this.processRatesData(data);
         },
         error: (error) => {
           console.error('Error loading currencies:', error);
@@ -118,26 +106,26 @@ export class CurrencySelector implements OnInit, OnDestroy {
       return;
     }
 
+    const actualBaseCurrencies =
+      this.exchangeRateService.getAvailableBaseCurrencies(rates);
     const extractedCurrencies =
       this.exchangeRateService.getAvailableCurrencies(rates);
-    const extractedBaseCurrencies =
-      this.exchangeRateService.getAvailableBaseCurrencies(rates);
 
-    console.log('Extracted currencies:', extractedCurrencies);
-    console.log('Extracted base currencies:', extractedBaseCurrencies);
+    console.log('Actual base currencies from API:', actualBaseCurrencies);
+    console.log('Extracted target currencies:', extractedCurrencies);
 
-    this.availableBaseCurrencies = [...this.expectedBaseCurrencies];
-
-    this.ltDataAvailable = extractedBaseCurrencies.includes('LT');
-    this.euDataAvailable = extractedBaseCurrencies.includes('EU');
+    this.ltDataAvailable = actualBaseCurrencies.includes('LT');
+    this.euDataAvailable = actualBaseCurrencies.includes('EU');
 
     console.log('LT data available:', this.ltDataAvailable);
     console.log('EU data available:', this.euDataAvailable);
 
+    this.availableBaseCurrencies = [...this.expectedBaseCurrencies];
+
     if (extractedCurrencies.length > 0) {
       this.availableCurrencies = extractedCurrencies;
     } else {
-      this.availableCurrencies = this.fallbackCurrencies;
+      this.availableCurrencies = [...this.fallbackCurrencies];
     }
 
     console.log('Final available currencies:', this.availableCurrencies);
@@ -147,7 +135,6 @@ export class CurrencySelector implements OnInit, OnDestroy {
     );
 
     this.setDefaultSelections();
-
     this.loading = false;
   }
 
@@ -161,7 +148,7 @@ export class CurrencySelector implements OnInit, OnDestroy {
       } else if (this.euDataAvailable) {
         this.selectedBaseCurrency = 'EU';
       } else {
-        this.selectedBaseCurrency = this.availableBaseCurrencies[0];
+        this.selectedBaseCurrency = this.availableBaseCurrencies[0] || 'LT';
       }
 
       console.log('Setting default base currency:', this.selectedBaseCurrency);
@@ -217,10 +204,12 @@ export class CurrencySelector implements OnInit, OnDestroy {
   }
 
   getStatusText(baseCurrency: string): string {
-    if (baseCurrency === 'LT')
+    if (baseCurrency === 'LT') {
       return this.ltDataAvailable ? 'Available' : 'No recent data';
-    if (baseCurrency === 'EU')
+    }
+    if (baseCurrency === 'EU') {
       return this.euDataAvailable ? 'Available' : 'No recent data';
+    }
     return 'Available';
   }
 }
