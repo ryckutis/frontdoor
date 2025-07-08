@@ -1,14 +1,63 @@
-// Mobile-responsive updates to your existing styles.scss
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8f9fa;
+  --text-primary: #333;
+  --text-secondary: #555;
+  --text-muted: #666;
+  --border-color: #ddd;
+  --border-light: #eee;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --info-bg: #e3f2fd;
+  --info-text: #1976d2;
+  --info-border: #2196f3;
+  --error-bg: #ffebee;
+  --error-text: #c62828;
+  --error-border: #f44336;
+  --positive-color: #28a745;
+  --negative-color: #dc3545;
+  --primary-color: #667eea;
+  --primary-hover: #5a6fd8;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-muted: #b0b0b0;
+  --border-color: #404040;
+  --border-light: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --info-bg: #1a237e;
+  --info-text: #90caf9;
+  --info-border: #3f51b5;
+  --error-bg: #b71c1c;
+  --error-text: #ffcdd2;
+  --error-border: #f44336;
+  --positive-color: #4caf50;
+  --negative-color: #f44336;
+  --primary-color: #7c4dff;
+  --primary-hover: #651fff;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .app-container {
   min-height: 100vh;
   padding: 0.75rem;
-  background: #f5f5f5;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   @media (min-width: 768px) {
     padding: 1.5rem;
@@ -16,29 +65,114 @@
 }
 
 .app-header {
-  text-align: center;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
   color: white;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--shadow);
+  position: relative;
 
-  h1 {
-    font-size: 1.5rem;
-    margin: 0 0 0.5rem 0;
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
 
-    @media (min-width: 768px) {
-      font-size: 2rem;
+    @media (max-width: 767px) {
+      flex-direction: column;
+      text-align: center;
     }
   }
 
-  p {
-    margin: 0;
-    font-size: 0.875rem;
+  .header-text {
+    flex: 1;
 
-    @media (min-width: 768px) {
-      font-size: 1rem;
+    h1 {
+      font-size: 1.5rem;
+      margin: 0 0 0.5rem 0;
+
+      @media (min-width: 768px) {
+        font-size: 2rem;
+      }
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+
+      @media (min-width: 768px) {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+.dark-mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.toggle-icon {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  color: white;
+
+  .sun-icon,
+  .moon-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sun-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .moon-icon {
+    opacity: 0;
+    transform: rotate(180deg) scale(0.8);
+  }
+
+  &.dark {
+    .sun-icon {
+      opacity: 0;
+      transform: rotate(-180deg) scale(0.8);
+    }
+
+    .moon-icon {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
     }
   }
 }
@@ -78,10 +212,11 @@
 .rates-section,
 .chart-section,
 .historical-section {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--shadow);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
   @media (min-width: 768px) {
     padding: 1.5rem;
@@ -109,7 +244,7 @@
   td {
     padding: 0.75rem 0.5rem;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-light);
     white-space: nowrap;
 
     @media (min-width: 768px) {
@@ -118,9 +253,9 @@
   }
 
   th {
-    background: #f8f9fa;
+    background: var(--bg-tertiary);
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     font-size: 0.75rem;
 
     @media (min-width: 768px) {
@@ -136,27 +271,29 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #555;
+    color: var(--text-secondary);
     font-size: 0.875rem;
   }
 
   select {
     width: 100%;
     padding: 0.75rem;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
     border-radius: 6px;
     font-size: 1rem;
-    background: white;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     -webkit-appearance: none;
     appearance: none;
     background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%23333' d='M6 8L2 4h8z'/></svg>");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     background-size: 12px;
+    transition: all 0.3s ease;
 
     &:focus {
       outline: none;
-      border-color: #667eea;
+      border-color: var(--primary-color);
       box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
     }
   }
@@ -179,11 +316,11 @@
 }
 
 .btn-primary {
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
 
   &:hover:not(:disabled) {
-    background: #5a6fd8;
+    background: var(--primary-hover);
   }
 }
 
@@ -210,7 +347,7 @@
 
   h2 {
     margin: 0;
-    color: #333;
+    color: var(--text-primary);
     font-size: 1.25rem;
 
     @media (min-width: 768px) {
@@ -233,15 +370,16 @@
 
   label {
     font-weight: 500;
-    color: #555;
+    color: var(--text-secondary);
     font-size: 0.875rem;
   }
 
   select {
     padding: 0.5rem 2rem 0.5rem 0.75rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    background: white;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     font-size: 0.875rem;
     -webkit-appearance: none;
     appearance: none;
@@ -249,10 +387,11 @@
     background-repeat: no-repeat;
     background-position: right 0.5rem center;
     background-size: 10px;
+    transition: all 0.3s ease;
 
     &:focus {
       outline: none;
-      border-color: #667eea;
+      border-color: var(--primary-color);
     }
   }
 }
@@ -260,13 +399,13 @@
 .currency-info {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: #e3f2fd;
+  background: var(--info-bg);
   border-radius: 6px;
-  border-left: 4px solid #2196f3;
+  border-left: 4px solid var(--info-border);
 
   h3 {
     margin: 0 0 0.5rem 0;
-    color: #1976d2;
+    color: var(--info-text);
     font-size: 1rem;
 
     @media (min-width: 768px) {
@@ -276,7 +415,7 @@
 
   .last-updated {
     margin: 0;
-    color: #666;
+    color: var(--text-muted);
     font-size: 0.8rem;
 
     @media (min-width: 768px) {
@@ -286,11 +425,11 @@
 }
 
 .error-message {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--error-bg);
+  color: var(--error-text);
   padding: 1rem;
   border-radius: 6px;
-  border-left: 4px solid #f44336;
+  border-left: 4px solid var(--error-border);
   margin-bottom: 1rem;
   font-size: 0.875rem;
 }
@@ -298,7 +437,7 @@
 .no-data {
   text-align: center;
   padding: 2rem 1rem;
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.875rem;
 
   @media (min-width: 768px) {
@@ -317,16 +456,17 @@
 
 .currency-cell {
   font-weight: 600;
-  color: #667eea;
+  color: var(--primary-color);
 }
 
 .rate-cell {
   font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .date-cell {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.8rem;
 
   @media (min-width: 768px) {
@@ -338,17 +478,17 @@
   font-weight: 600;
 
   &.positive {
-    color: #28a745;
+    color: var(--positive-color);
   }
 
   &.negative {
-    color: #dc3545;
+    color: var(--negative-color);
   }
 }
 
 .loading-spinner {
   text-align: center;
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.875rem;
   padding: 1rem;
 }
@@ -382,4 +522,9 @@
   .mobile-only {
     display: none !important;
   }
+}
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
 }

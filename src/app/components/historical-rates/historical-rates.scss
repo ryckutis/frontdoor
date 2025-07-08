@@ -13,7 +13,7 @@
 
     h2 {
       margin: 0;
-      color: #333;
+      color: var(--text-primary);
       font-size: 1.25rem;
 
       @media (min-width: 768px) {
@@ -36,7 +36,7 @@
 
     label {
       font-weight: 500;
-      color: #555;
+      color: var(--text-secondary);
       font-size: 0.875rem;
       white-space: nowrap;
 
@@ -47,9 +47,10 @@
 
     select {
       padding: 0.75rem 1rem;
-      border: 2px solid #ddd;
+      border: 2px solid var(--border-color);
       border-radius: 6px;
-      background: white;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
       font-size: 0.875rem;
       -webkit-appearance: none;
       appearance: none;
@@ -68,14 +69,14 @@
 
       &:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: var(--primary-color);
         box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
       }
 
       &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
-        background-color: #f8f9fa;
+        background-color: var(--bg-tertiary);
       }
     }
   }
@@ -83,13 +84,13 @@
   .currency-info {
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background: #e3f2fd;
+    background: var(--info-bg);
     border-radius: 6px;
-    border-left: 4px solid #2196f3;
+    border-left: 4px solid var(--info-border);
 
     h3 {
       margin: 0;
-      color: #1976d2;
+      color: var(--info-text);
       font-size: 1rem;
       word-break: break-word;
 
@@ -100,11 +101,11 @@
   }
 
   .error-message {
-    background: #ffebee;
-    color: #c62828;
+    background: var(--error-bg);
+    color: var(--error-text);
     padding: 1rem;
     border-radius: 6px;
-    border-left: 4px solid #f44336;
+    border-left: 4px solid var(--error-border);
     margin-bottom: 1rem;
     font-size: 0.875rem;
     word-break: break-word;
@@ -113,7 +114,7 @@
   .no-data {
     text-align: center;
     padding: 2rem 1rem;
-    color: #666;
+    color: var(--text-muted);
     font-size: 0.875rem;
 
     @media (min-width: 768px) {
@@ -136,16 +137,16 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: var(--bg-tertiary);
       border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: var(--border-color);
       border-radius: 4px;
 
       &:hover {
-        background: #a8a8a8;
+        background: var(--text-muted);
       }
     }
 
@@ -165,7 +166,7 @@
     td {
       padding: 0.75rem 0.5rem;
       text-align: left;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--border-light);
       white-space: nowrap;
 
       @media (min-width: 768px) {
@@ -174,9 +175,9 @@
     }
 
     th {
-      background: #f8f9fa;
+      background: var(--bg-tertiary);
       font-weight: 600;
-      color: #333;
+      color: var(--text-primary);
       font-size: 0.75rem;
       position: sticky;
       top: 0;
@@ -189,12 +190,12 @@
 
     .rate-row {
       &:hover {
-        background: #f8f9fa;
+        background: var(--bg-tertiary);
       }
     }
 
     .date-cell {
-      color: #666;
+      color: var(--text-muted);
       font-size: 0.8rem;
       min-width: 100px;
 
@@ -206,6 +207,7 @@
     .rate-cell {
       font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
       font-weight: 500;
+      color: var(--text-primary);
       min-width: 120px;
     }
 
@@ -215,11 +217,11 @@
       min-width: 80px;
 
       &.positive {
-        color: #28a745;
+        color: var(--positive-color);
       }
 
       &.negative {
-        color: #dc3545;
+        color: var(--negative-color);
       }
     }
   }

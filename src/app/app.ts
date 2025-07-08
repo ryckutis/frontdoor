@@ -13,6 +13,9 @@ export class App implements OnInit, OnDestroy {
   protected title = 'frontdoor';
   protected isAppLoading = true;
   protected loadingError = false;
+  isDarkMode = false;
+
+  private readonly THEME_KEY = 'theme-preference';
 
   private destroy$ = new Subject<void>();
 
@@ -20,6 +23,7 @@ export class App implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadInitialData();
+    this.initializeTheme();
     this.startKeepAlive();
     console.log('App initialized, keep-alive should start');
   }
@@ -27,6 +31,43 @@ export class App implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private initializeTheme(): void {
+    const savedTheme = localStorage.getItem(this.THEME_KEY);
+
+    if (savedTheme) {
+      this.isDarkMode = savedTheme === 'dark';
+    } else {
+      // Check system preference
+      this.isDarkMode = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
+    }
+
+    this.applyTheme();
+  }
+
+  toggleDarkMode(): void {
+    this.isDarkMode = !this.isDarkMode;
+    this.applyTheme();
+    this.saveThemePreference();
+  }
+
+  private applyTheme(): void {
+    const theme = this.isDarkMode ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+
+    if (this.isDarkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }
+
+  private saveThemePreference(): void {
+    const theme = this.isDarkMode ? 'dark' : 'light';
+    localStorage.setItem(this.THEME_KEY, theme);
   }
 
   private startKeepAlive(): void {
