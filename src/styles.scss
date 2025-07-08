@@ -46,6 +46,26 @@
   --primary-hover: #651fff;
 }
 
+html,
+body {
+  color-scheme: light dark;
+}
+
+[data-theme="dark"] {
+  background: #121212 !important;
+
+  body {
+    background: #121212 !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  html,
+  body {
+    min-height: -webkit-fill-available;
+  }
+}
+
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
