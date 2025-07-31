@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CurrentRates } from './current-rates';
+import { SkeletonLoader } from './skeleton-loader';
 
-describe('CurrentRates', () => {
-  let component: CurrentRates;
-  let fixture: ComponentFixture<CurrentRates>;
+describe('SkeletonLoader', () => {
+  let component: SkeletonLoader;
+  let fixture: ComponentFixture<SkeletonLoader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CurrentRates]
+      declarations: [SkeletonLoader]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CurrentRates);
+    fixture = TestBed.createComponent(SkeletonLoader);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

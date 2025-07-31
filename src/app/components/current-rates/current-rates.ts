@@ -18,11 +18,13 @@ export class CurrentRates implements OnInit, OnDestroy {
   error: string | null = null;
   lastUpdated: Date | null = null;
   private subscription = new Subscription();
+  private updateRatesInterval: any;
 
   constructor(private exchangeRateService: ExchangeRateService) {}
 
   ngOnInit(): void {
     this.loadCurrentRates();
+    this.scheduleUpdateRates();
 
     this.subscription.add(
       this.exchangeRateService.selectedCurrency$.subscribe((currency) => {
@@ -43,6 +45,9 @@ export class CurrentRates implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    if (this.updateRatesInterval) {
+      clearInterval(this.updateRatesInterval);
+    }
   }
 
   loadCurrentRates(): void {
@@ -51,32 +56,26 @@ export class CurrentRates implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.exchangeRateService.getCurrentRates().subscribe({
-        next: (rates: ExchangeRate[]) => {
+        next: (rates) => {
           this.currentRates = rates;
-          this.filterRatesByCurrency();
           this.lastUpdated = new Date();
           this.loading = false;
+          this.filterRatesByCurrency();
         },
-        error: (error) => {
-          this.error = 'Failed to load current rates. Please try again.';
+        error: (err) => {
+          this.error = err.message;
           this.loading = false;
-          console.error('Error loading current rates:', error);
         },
       })
     );
   }
 
   filterRatesByCurrency(): void {
-    if (!this.currentRates.length) return;
-
-    this.filteredRates = this.currentRates.filter((rate) => {
-      const matchesBase = rate.baseCurrency === this.selectedBaseCurrency;
-      const matchesTarget =
-        !this.selectedCurrency ||
-        this.selectedCurrency === '' ||
-        rate.targetCurrency === this.selectedCurrency;
-      return matchesBase && matchesTarget;
-    });
+    if (this.selectedCurrency && this.currentRates) {
+      this.filteredRates = this.currentRates.filter(
+        (rate) => rate.targetCurrency === this.selectedCurrency
+      );
+    }
   }
 
   refreshRates(): void {
@@ -84,18 +83,22 @@ export class CurrentRates implements OnInit, OnDestroy {
   }
 
   updateRates(): void {
-    this.loading = true;
-    this.subscription.add(
-      this.exchangeRateService.updateRates().subscribe({
-        next: () => {
-          this.loadCurrentRates();
-        },
-        error: (error) => {
-          this.error = 'Failed to update rates. Please try again.';
-          this.loading = false;
-          console.error('Error updating rates:', error);
-        },
-      })
-    );
+    this.scheduleUpdateRates();
+  }
+
+  scheduleUpdateRates(): void {
+    const updateTime = new Date();
+    updateTime.setHours(18, 0, 0, 0);
+    if (updateTime < new Date()) {
+      updateTime.setDate(updateTime.getDate() + 1);
+    }
+
+    const timeToNextUpdate = updateTime.getTime() - new Date().getTime();
+
+    this.updateRatesInterval = setTimeout(() => {
+      this.loadCurrentRates();
+
+      this.scheduleUpdateRates();
+    }, timeToNextUpdate);
   }
 }
