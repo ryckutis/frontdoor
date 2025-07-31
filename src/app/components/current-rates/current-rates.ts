@@ -56,26 +56,32 @@ export class CurrentRates implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.exchangeRateService.getCurrentRates().subscribe({
-        next: (rates) => {
+        next: (rates: ExchangeRate[]) => {
           this.currentRates = rates;
+          this.filterRatesByCurrency();
           this.lastUpdated = new Date();
           this.loading = false;
-          this.filterRatesByCurrency();
         },
-        error: (err) => {
-          this.error = err.message;
+        error: (error) => {
+          this.error = 'Failed to load current rates. Please try again.';
           this.loading = false;
+          console.error('Error loading current rates:', error);
         },
       })
     );
   }
 
   filterRatesByCurrency(): void {
-    if (this.selectedCurrency && this.currentRates) {
-      this.filteredRates = this.currentRates.filter(
-        (rate) => rate.targetCurrency === this.selectedCurrency
-      );
-    }
+    if (!this.currentRates.length) return;
+
+    this.filteredRates = this.currentRates.filter((rate) => {
+      const matchesBase = rate.baseCurrency === this.selectedBaseCurrency;
+      const matchesTarget =
+        !this.selectedCurrency ||
+        this.selectedCurrency === '' ||
+        rate.targetCurrency === this.selectedCurrency;
+      return matchesBase && matchesTarget;
+    });
   }
 
   refreshRates(): void {
@@ -83,21 +89,34 @@ export class CurrentRates implements OnInit, OnDestroy {
   }
 
   updateRates(): void {
-    this.scheduleUpdateRates();
+    this.loading = true;
+    this.subscription.add(
+      this.exchangeRateService.updateRates().subscribe({
+        next: () => {
+          this.loadCurrentRates();
+        },
+        error: (error) => {
+          this.error = 'Failed to update rates. Please try again.';
+          this.loading = false;
+          console.error('Error updating rates:', error);
+        },
+      })
+    );
   }
 
   scheduleUpdateRates(): void {
     const updateTime = new Date();
     updateTime.setHours(18, 0, 0, 0);
-    if (updateTime < new Date()) {
+    const now = new Date();
+
+    if (updateTime < now) {
       updateTime.setDate(updateTime.getDate() + 1);
     }
 
-    const timeToNextUpdate = updateTime.getTime() - new Date().getTime();
+    const timeToNextUpdate = updateTime.getTime() - now.getTime();
 
     this.updateRatesInterval = setTimeout(() => {
-      this.loadCurrentRates();
-
+      this.updateRates();
       this.scheduleUpdateRates();
     }, timeToNextUpdate);
   }
