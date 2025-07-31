@@ -14,6 +14,7 @@ import { CurrencySelector } from './components/currency-selector/currency-select
 import { CurrentRates } from './components/current-rates/current-rates';
 import { HistoricalRates } from './components/historical-rates/historical-rates';
 import { RateChart } from './components/rate-chart/rate-chart';
+import { SkeletonLoader } from './skeleton-loader/skeleton-loader';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { RateChart } from './components/rate-chart/rate-chart';
     CurrentRates,
     HistoricalRates,
     RateChart,
+    SkeletonLoader,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, BaseChartDirective],
   providers: [provideCharts(withDefaultRegisterables()), provideHttpClient()],
